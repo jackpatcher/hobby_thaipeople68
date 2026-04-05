@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="th" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>สำมะโนประชากรไทย 2568</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&amp;family=IBM+Plex+Sans+Thai:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            thai: ['IBM Plex Sans Thai', 'Noto Sans Thai', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'IBM Plex Sans Thai', 'Noto Sans Thai', sans-serif; }
+    .fade-in { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .bar-animate { animation: barGrow 0.8s ease-out; transform-origin: left; }
+    @keyframes barGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    .stat-card { transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06); }
+    .stat-card:hover { transform: translateY(-2px); }
+    .scroll-area { scrollbar-width: thin; scrollbar-color: #4a5568 transparent; }
+    .scroll-area::-webkit-scrollbar { width: 6px; }
+    .scroll-area::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 3px; }
+    .row-hover { transition: background 0.15s ease; }
+    .row-hover:hover { background: rgba(59, 130, 246, 0.05); }
+    .gradient-text { background: linear-gradient(135deg, #63b3ed, #b794f4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-white text-gray-900">
+  <div id="app" class="h-full w-full overflow-auto scroll-area"><!-- Header -->
+   <header class="relative overflow-hidden border-b border-gray-200">
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+      <div>
+       <div class="flex items-center gap-3 mb-2">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-xl">
+         🇹🇭
+        </div>
+        <h1 id="mainTitle" class="text-2xl sm:text-3xl font-bold text-blue-900">สำมะโนประชากรไทย</h1>
+       </div>
+       <p id="subtitle" class="text-gray-600 text-sm sm:text-base ml-[52px]">ปี พ.ศ. 2568</p>
+      </div>
+      <div class="flex items-center gap-2 ml-[52px] sm:ml-0"><span class="text-xs text-gray-600">ข้อมูลทั้งหมด</span> <span id="totalDisplay" class="text-lg font-bold text-blue-600">65,909,011</span> <span class="text-xs text-gray-600">คน</span>
+      </div>
+     </div>
+    </div>
+   </header><!-- Summary Cards -->
+   <section class="max-w-7xl mx-auto px-4 sm:px-6 py-5">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="summaryCards"></div>
+   </section><!-- Highlights Section -->
+   <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-5 border-t border-gray-200 pt-5">
+    <h3 class="text-sm font-semibold text-gray-700 mb-3">📍 สูงสุดในแต่ละหมวด</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="highlightCards"></div>
+   </section><!-- Controls -->
+   <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-3">
+    <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+     <div class="relative flex-1"><i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i> <input id="searchInput" type="text" placeholder="ค้นหาจังหวัด..." class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-100 transition-colors">
+     </div>
+     <div class="flex gap-2"><button id="btnSortName" onclick="setSort('name')" class="px-3 py-2 text-xs rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 transition-colors flex items-center gap-1.5"> <i data-lucide="arrow-down-a-z" class="w-3.5 h-3.5"></i> ชื่อ </button> <button id="btnSortPop" onclick="setSort('pop')" class="px-3 py-2 text-xs rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 transition-colors flex items-center gap-1.5"> <i data-lucide="arrow-down-wide-narrow" class="w-3.5 h-3.5"></i> ประชากร </button> <button id="btnViewTable" onclick="setView('table')" class="px-3 py-2 text-xs rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 transition-colors flex items-center gap-1.5"> <i data-lucide="list" class="w-3.5 h-3.5"></i> </button> <button id="btnViewBar" onclick="setView('bar')" class="px-3 py-2 text-xs rounded-lg border border-blue-600 bg-blue-50 text-blue-600 transition-colors flex items-center gap-1.5"> <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i> </button>
+     </div>
+    </div>
+   </section><!-- Data View -->
+   <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-8">
+    <div id="dataContainer" class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md"></div>
+    <p id="resultCount" class="text-xs text-gray-500 mt-2 text-right"></p>
+   </section><!-- Detail Modal -->
+   <div id="modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden" onclick="if(event.target===this)closeModal()">
+    <div class="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
+    <div class="relative bg-white border border-gray-200 rounded-2xl w-full max-w-md p-6 fade-in shadow-lg"><button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+     <div id="modalContent"></div>
+    </div>
+   </div>
+  </div>
+  <script>
+const populationData = [
+  {"id":0,"province":"ทั่วประเทศ","thai_male":31523405,"thai_female":33397303,"non_thai_male":521683,"non_thai_female":466620,"total":65909011},
+  {"id":1,"province":"กรุงเทพมหานคร","thai_male":2469011,"thai_female":2850569,"non_thai_male":87221,"non_thai_female":65767,"total":5472568},
+  {"id":2,"province":"กระบี่","thai_male":237416,"thai_female":241180,"non_thai_male":1902,"non_thai_female":2208,"total":482706},
+  {"id":3,"province":"กาญจนบุรี","thai_male":406064,"thai_female":412667,"non_thai_male":41232,"non_thai_female":36710,"total":896633},
+  {"id":4,"province":"กาฬสินธุ์","thai_male":480670,"thai_female":492594,"non_thai_male":321,"non_thai_female":236,"total":973821},
+  {"id":5,"province":"กำแพงเพชร","thai_male":349092,"thai_female":353717,"non_thai_male":581,"non_thai_female":542,"total":706932},
+  {"id":6,"province":"ขอนแก่น","thai_male":860293,"thai_female":911033,"non_thai_male":3169,"non_thai_female":3068,"total":1777563},
+  {"id":7,"province":"จันทบุรี","thai_male":258790,"thai_female":271127,"non_thai_male":2616,"non_thai_female":2434,"total":534967},
+  {"id":8,"province":"ฉะเชิงเทรา","thai_male":356498,"thai_female":373739,"non_thai_male":1546,"non_thai_female":1619,"total":733402},
+  {"id":9,"province":"ชลบุรี","thai_male":784230,"thai_female":842492,"non_thai_male":14786,"non_thai_female":9037,"total":1650545},
+  {"id":10,"province":"ชัยนาท","thai_male":154260,"thai_female":162047,"non_thai_male":202,"non_thai_female":185,"total":316694},
+  {"id":11,"province":"ชัยภูมิ","thai_male":540822,"thai_female":558777,"non_thai_male":1097,"non_thai_female":977,"total":1101673},
+  {"id":12,"province":"ชุมพร","thai_male":247656,"thai_female":255709,"non_thai_male":1514,"non_thai_female":1248,"total":506127},
+  {"id":13,"province":"เชียงราย","thai_male":564600,"thai_female":596732,"non_thai_male":66752,"non_thai_female":71838,"total":1299922},
+  {"id":14,"province":"เชียงใหม่","thai_male":781326,"thai_female":863304,"non_thai_male":81527,"non_thai_female":78431,"total":1804588},
+  {"id":15,"province":"ตรัง","thai_male":308550,"thai_female":328281,"non_thai_male":700,"non_thai_female":585,"total":638116},
+  {"id":16,"province":"ตราด","thai_male":106634,"thai_female":109773,"non_thai_male":4640,"non_thai_female":4554,"total":225601},
+  {"id":17,"province":"ตาก","thai_male":276634,"thai_female":276848,"non_thai_male":79561,"non_thai_female":72604,"total":705647},
+  {"id":18,"province":"นครนายก","thai_male":127511,"thai_female":130868,"non_thai_male":751,"non_thai_female":607,"total":259737},
+  {"id":19,"province":"นครปฐม","thai_male":444327,"thai_female":477630,"non_thai_male":5837,"non_thai_female":5206,"total":933000},
+  {"id":20,"province":"นครพนม","thai_male":351206,"thai_female":355631,"non_thai_male":924,"non_thai_female":908,"total":708669},
+  {"id":21,"province":"นครราชสีมา","thai_male":1275037,"thai_female":1338849,"non_thai_male":3243,"non_thai_female":3097,"total":2620226},
+  {"id":22,"province":"นครศรีธรรมราช","thai_male":763522,"thai_female":784262,"non_thai_male":1608,"non_thai_female":1243,"total":1550635},
+  {"id":23,"province":"นครสวรรค์","thai_male":488288,"thai_female":512688,"non_thai_male":1203,"non_thai_female":992,"total":1003171},
+  {"id":24,"province":"นนทบุรี","thai_male":605728,"thai_female":706863,"non_thai_male":5221,"non_thai_female":4599,"total":1322411},
+  {"id":25,"province":"นราธิวาส","thai_male":409314,"thai_female":418035,"non_thai_male":618,"non_thai_female":532,"total":828499}
+];
+
+const national = populationData[0];
+const provinces = populationData.slice(1);
+const maxPop = Math.max(...provinces.map(p => p.total));
+
+let currentSort = 'pop';
+let sortDir = -1;
+let currentView = 'bar';
+let searchTerm = '';
+
+// Format number with commas
+function fmt(n) { return n.toLocaleString('th-TH'); }
+function pct(n, d) { return ((n / d) * 100).toFixed(1); }
+
+// Default config
+const defaultConfig = {
+  main_title: 'สำมะโนประชากรไทย',
+  subtitle: 'ปี พ.ศ. 2568',
+  background_color: '#ffffff',
+  surface_color: '#f9fafb',
+  text_color: '#111827',
+  primary_action_color: '#2563eb',
+  secondary_action_color: '#7c3aed',
+  font_family: 'IBM Plex Sans Thai',
+  font_size: 14
+};
+
+function applyConfig(config) {
+  const c = { ...defaultConfig, ...config };
+  document.getElementById('mainTitle').textContent = c.main_title;
+  document.getElementById('subtitle').textContent = c.subtitle;
+
+  const root = document.documentElement;
+  document.body.style.backgroundColor = c.background_color;
+  document.body.style.color = c.text_color;
+
+  document.querySelectorAll('.stat-card').forEach(el => {
+    el.style.backgroundColor = c.surface_color;
+    el.style.borderColor = '#e5e7eb';
+  });
+
+  const font = `${c.font_family}, Noto Sans Thai, sans-serif`;
+  document.body.style.fontFamily = font;
+
+  const base = c.font_size;
+  document.getElementById('mainTitle').style.fontSize = `${base * 1.8}px`;
+  document.getElementById('subtitle').style.fontSize = `${base}px`;
+}
+
+// Init Element SDK
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => applyConfig(config),
+  mapToCapabilities: (config) => ({
+    recolorables: [
+      { get: () => config.background_color || defaultConfig.background_color, set: v => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+      { get: () => config.surface_color || defaultConfig.surface_color, set: v => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+      { get: () => config.text_color || defaultConfig.text_color, set: v => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+      { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: v => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+      { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: v => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } },
+    ],
+    borderables: [],
+    fontEditable: {
+      get: () => config.font_family || defaultConfig.font_family,
+      set: v => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+    },
+    fontSizeable: {
+      get: () => config.font_size || defaultConfig.font_size,
+      set: v => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+    }
+  }),
+  mapToEditPanelValues: (config) => new Map([
+    ['main_title', config.main_title || defaultConfig.main_title],
+    ['subtitle', config.subtitle || defaultConfig.subtitle]
+  ])
+});
+
+// Render summary cards
+function renderSummary() {
+  const cards = [
+    { label: 'ชายไทย', value: national.thai_male, icon: 'user', accent: 'text-blue-700', borderColor: 'border-l-8 border-l-blue-600' },
+    { label: 'หญิงไทย', value: national.thai_female, icon: 'user', accent: 'text-pink-700', borderColor: 'border-l-8 border-l-pink-600' },
+    { label: 'ชายต่างชาติ', value: national.non_thai_male, icon: 'globe', accent: 'text-emerald-700', borderColor: 'border-l-8 border-l-emerald-600' },
+    { label: 'หญิงต่างชาติ', value: national.non_thai_female, icon: 'globe', accent: 'text-amber-700', borderColor: 'border-l-8 border-l-amber-600' },
+  ];
+  document.getElementById('summaryCards').innerHTML = cards.map((c, i) => `
+    <div class="stat-card bg-white rounded-xl p-4 fade-in shadow-md hover:shadow-lg" style="animation-delay:${i*80}ms; border-left: 8px solid ${c.borderColor.includes('blue') ? '#2563eb' : c.borderColor.includes('pink') ? '#db2777' : c.borderColor.includes('emerald') ? '#059669' : '#b45309'}; border: 1px solid #e5e7eb; border-left-width: 8px;">
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="${c.icon}" class="w-4 h-4 ${c.accent}"></i>
+        <span class="text-xs text-gray-600">${c.label}</span>
+      </div>
+      <div class="text-lg sm:text-xl font-bold ${c.accent}">${fmt(c.value)}</div>
+      <div class="text-[10px] text-gray-500 mt-1">${pct(c.value, national.total)}% ของทั้งหมด</div>
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+
+// Format number with K notation
+function fmtCompact(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(0) + 'K';
+  return n.toString();
+}
+
+// Render highlight cards for top 3 values
+function renderHighlights() {
+  const categories = [
+    {
+      title: 'ประชากรไทยมากที่สุด',
+      value: p => p.thai_male + p.thai_female,
+      icon: 'crown',
+      accent: 'text-purple-700',
+      borderColor: 'border-l-purple-600'
+    },
+    {
+      title: 'ต่างชาติมากที่สุด',
+      value: p => p.non_thai_male + p.non_thai_female,
+      icon: 'globe',
+      accent: 'text-cyan-700',
+      borderColor: 'border-l-cyan-600'
+    },
+    {
+      title: 'ชายไทยมากที่สุด',
+      value: p => p.thai_male,
+      icon: 'user-check',
+      accent: 'text-blue-700',
+      borderColor: 'border-l-blue-600'
+    },
+    {
+      title: 'หญิงไทยมากที่สุด',
+      value: p => p.thai_female,
+      icon: 'user-check',
+      accent: 'text-pink-700',
+      borderColor: 'border-l-pink-600'
+    },
+    {
+      title: 'ชายต่างชาติมากที่สุด',
+      value: p => p.non_thai_male,
+      icon: 'globe',
+      accent: 'text-emerald-700',
+      borderColor: 'border-l-emerald-600'
+    },
+    {
+      title: 'หญิงต่างชาติมากที่สุด',
+      value: p => p.non_thai_female,
+      icon: 'globe',
+      accent: 'text-amber-700',
+      borderColor: 'border-l-amber-600'
+    },
+  ];
+  
+  let allCards = '';
+  let cardIndex = 0;
+  
+  categories.forEach((cat, catIdx) => {
+    const sorted = [...provinces].sort((a, b) => cat.value(b) - cat.value(a)).slice(0, 3);
+    
+    const rows = sorted.map((data, rank) => `
+      <div class="flex items-center justify-between py-2.5 px-3 border-t border-gray-100 first:border-t-0 cursor-pointer hover:bg-gray-50 transition-colors" onclick="showDetail(${data.id})">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-gray-400 w-4">${rank + 1}</span>
+          <span class="font-medium text-gray-900 text-sm">${data.province}</span>
+        </div>
+        <span class="text-xs text-gray-500">${fmtCompact(cat.value(data))}</span>
+      </div>
+    `).join('');
+    
+    allCards += `
+      <div class="stat-card bg-white border border-gray-200 ${cat.borderColor} border-l-4 rounded-xl p-3 fade-in shadow-md hover:shadow-lg" style="animation-delay:${cardIndex*40}ms">
+        <div class="flex items-center gap-2 mb-3">
+          <i data-lucide="${cat.icon}" class="w-4 h-4 ${cat.accent}"></i>
+          <span class="text-xs font-medium text-gray-700">${cat.title}</span>
+        </div>
+        <div class="divide-y divide-gray-200">${rows}</div>
+      </div>
+    `;
+    cardIndex++;
+  });
+  
+  document.getElementById('highlightCards').innerHTML = allCards;
+  lucide.createIcons();
+}
+
+// Get filtered/sorted data
+function getData() {
+  let data = [...provinces];
+  if (searchTerm) {
+    data = data.filter(p => p.province.includes(searchTerm));
+  }
+  if (currentSort === 'name') {
+    data.sort((a, b) => sortDir * a.province.localeCompare(b.province, 'th'));
+  } else {
+    data.sort((a, b) => sortDir * (a.total - b.total));
+  }
+  return data;
+}
+
+// Render bar chart view
+function renderBars(data) {
+  if (!data.length) return '<div class="p-8 text-center text-gray-500">ไม่พบข้อมูล</div>';
+  const borderColors = ['border-l-blue-500', 'border-l-purple-500', 'border-l-pink-500', 'border-l-emerald-500', 'border-l-amber-500', 'border-l-cyan-500', 'border-l-rose-500', 'border-l-indigo-500'];
+  return `<div class="divide-y divide-gray-200">${data.map((p, i) => {
+    const w = (p.total / maxPop) * 100;
+    const thaiM = (p.thai_male / p.total) * 100;
+    const thaiF = (p.thai_female / p.total) * 100;
+    const nonM = (p.non_thai_male / p.total) * 100;
+    const borderClass = borderColors[i % borderColors.length];
+    return `
+    <div class="row-hover border-l-4 ${borderClass} px-4 py-2.5 cursor-pointer" onclick="showDetail(${p.id})">
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-sm font-medium text-gray-900">${p.province}</span>
+        <span class="text-xs font-mono text-gray-600">${fmt(p.total)}</span>
+      </div>
+      <div class="h-3 rounded-full overflow-hidden bg-gray-200 bar-animate" style="width:${w}%;animation-delay:${i*30}ms">
+        <div class="h-full flex">
+          <div style="width:${thaiM}%" class="bg-blue-600"></div>
+          <div style="width:${thaiF}%" class="bg-pink-500"></div>
+          <div style="width:${nonM}%" class="bg-emerald-500"></div>
+          <div class="flex-1 bg-amber-500"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('')}</div>
+  <div class="px-4 py-3 border-t border-gray-200 flex flex-wrap gap-4 text-[10px] text-gray-600">
+    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-blue-600"></span>ชายไทย</span>
+    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-pink-500"></span>หญิงไทย</span>
+    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-emerald-500"></span>ชายต่างชาติ</span>
+    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-amber-500"></span>หญิงต่างชาติ</span>
+  </div>`;
+}
+
+// Render table view
+function renderTable(data) {
+  if (!data.length) return '<div class="p-8 text-center text-gray-500">ไม่พบข้อมูล</div>';
+  const borderColors = ['border-l-blue-500', 'border-l-purple-500', 'border-l-pink-500', 'border-l-emerald-500', 'border-l-amber-500', 'border-l-cyan-500', 'border-l-rose-500', 'border-l-indigo-500'];
+  return `
+  <div class="overflow-x-auto">
+    <table class="w-full text-xs sm:text-sm">
+      <thead>
+        <tr class="text-left text-gray-600 border-b border-gray-200 bg-gray-50">
+          <th class="px-4 py-3 font-medium">จังหวัด</th>
+          <th class="px-3 py-3 font-medium text-right">ชายไทย</th>
+          <th class="px-3 py-3 font-medium text-right">หญิงไทย</th>
+          <th class="px-3 py-3 font-medium text-right hidden sm:table-cell">ชาย ตปท.</th>
+          <th class="px-3 py-3 font-medium text-right hidden sm:table-cell">หญิง ตปท.</th>
+          <th class="px-3 py-3 font-medium text-right">รวม</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        ${data.map((p, i) => `
+        <tr class="row-hover border-l-4 ${borderColors[i % borderColors.length]} cursor-pointer" onclick="showDetail(${p.id})">
+          <td class="px-4 py-2.5 font-medium text-gray-900">${p.province}</td>
+          <td class="px-3 py-2.5 text-right text-blue-700 font-mono">${fmt(p.thai_male)}</td>
+          <td class="px-3 py-2.5 text-right text-pink-600 font-mono">${fmt(p.thai_female)}</td>
+          <td class="px-3 py-2.5 text-right text-emerald-700 font-mono hidden sm:table-cell">${fmt(p.non_thai_male)}</td>
+          <td class="px-3 py-2.5 text-right text-amber-700 font-mono hidden sm:table-cell">${fmt(p.non_thai_female)}</td>
+          <td class="px-3 py-2.5 text-right font-bold text-gray-900 font-mono">${fmt(p.total)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function render() {
+  const data = getData();
+  const container = document.getElementById('dataContainer');
+  container.innerHTML = currentView === 'bar' ? renderBars(data) : renderTable(data);
+  document.getElementById('resultCount').textContent = `แสดง ${data.length} จาก ${provinces.length} จังหวัด`;
+
+  // Update button states
+  const activeBtn = 'border-blue-600 bg-blue-50 text-blue-600';
+  const inactiveBtn = 'border-gray-300 bg-white text-gray-700';
+  document.getElementById('btnViewBar').className = `px-3 py-2 text-xs rounded-lg border transition-colors flex items-center gap-1.5 ${currentView === 'bar' ? activeBtn : inactiveBtn}`;
+  document.getElementById('btnViewTable').className = `px-3 py-2 text-xs rounded-lg border transition-colors flex items-center gap-1.5 ${currentView === 'table' ? activeBtn : inactiveBtn}`;
+  document.getElementById('btnSortPop').className = `px-3 py-2 text-xs rounded-lg border transition-colors flex items-center gap-1.5 ${currentSort === 'pop' ? activeBtn : inactiveBtn}`;
+  document.getElementById('btnSortName').className = `px-3 py-2 text-xs rounded-lg border transition-colors flex items-center gap-1.5 ${currentSort === 'name' ? activeBtn : inactiveBtn}`;
+
+  lucide.createIcons();
+}
+
+function setSort(type) {
+  if (currentSort === type) sortDir *= -1;
+  else { currentSort = type; sortDir = type === 'name' ? 1 : -1; }
+  render();
+}
+
+function setView(v) { currentView = v; render(); }
+
+function showDetail(id) {
+  const p = populationData.find(d => d.id === id);
+  if (!p) return;
+  const thaiTotal = p.thai_male + p.thai_female;
+  const nonThaiTotal = p.non_thai_male + p.non_thai_female;
+  const maleTotal = p.thai_male + p.non_thai_male;
+  const femaleTotal = p.thai_female + p.non_thai_female;
+
+  document.getElementById('modalContent').innerHTML = `
+    <h2 class="text-xl font-bold text-gray-900 mb-1">${p.province}</h2>
+    <p class="text-2xl font-bold text-blue-600 mb-5">${fmt(p.total)} <span class="text-sm text-gray-500">คน</span></p>
+    
+    <div class="space-y-4">
+      <div>
+        <div class="flex justify-between text-xs text-gray-600 mb-1.5"><span>ชาย / หญิง</span><span>${pct(maleTotal, p.total)}% / ${pct(femaleTotal, p.total)}%</span></div>
+        <div class="h-4 rounded-full overflow-hidden bg-gray-200 flex">
+          <div class="bg-blue-600" style="width:${pct(maleTotal, p.total)}%"></div>
+          <div class="bg-pink-500 flex-1"></div>
+        </div>
+        <div class="flex justify-between text-[10px] text-gray-600 mt-1"><span>${fmt(maleTotal)}</span><span>${fmt(femaleTotal)}</span></div>
+      </div>
+      
+      <div>
+        <div class="flex justify-between text-xs text-gray-600 mb-1.5"><span>ไทย / ต่างชาติ</span><span>${pct(thaiTotal, p.total)}% / ${pct(nonThaiTotal, p.total)}%</span></div>
+        <div class="h-4 rounded-full overflow-hidden bg-gray-200 flex">
+          <div class="bg-purple-600" style="width:${pct(thaiTotal, p.total)}%"></div>
+          <div class="bg-emerald-500 flex-1"></div>
+        </div>
+        <div class="flex justify-between text-[10px] text-gray-600 mt-1"><span>${fmt(thaiTotal)}</span><span>${fmt(nonThaiTotal)}</span></div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 pt-2">
+        <div class="bg-blue-50 rounded-lg p-3 border border-blue-200">
+          <div class="text-[10px] text-gray-600 mb-1">ชายไทย</div>
+          <div class="text-sm font-bold text-blue-700">${fmt(p.thai_male)}</div>
+        </div>
+        <div class="bg-pink-50 rounded-lg p-3 border border-pink-200">
+          <div class="text-[10px] text-gray-600 mb-1">หญิงไทย</div>
+          <div class="text-sm font-bold text-pink-700">${fmt(p.thai_female)}</div>
+        </div>
+        <div class="bg-emerald-50 rounded-lg p-3 border border-emerald-200">
+          <div class="text-[10px] text-gray-600 mb-1">ชายต่างชาติ</div>
+          <div class="text-sm font-bold text-emerald-700">${fmt(p.non_thai_male)}</div>
+        </div>
+        <div class="bg-amber-50 rounded-lg p-3 border border-amber-200">
+          <div class="text-[10px] text-gray-600 mb-1">หญิงต่างชาติ</div>
+          <div class="text-sm font-bold text-amber-700">${fmt(p.non_thai_female)}</div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('modal').classList.remove('hidden');
+  lucide.createIcons();
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.add('hidden');
+}
+
+// Search
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  searchTerm = e.target.value.trim();
+  render();
+});
+
+// Keyboard close modal
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// Init
+renderSummary();
+renderHighlights();
+render();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e7632bcb5eba1ba',t:'MTc3NTM2NzQxOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
